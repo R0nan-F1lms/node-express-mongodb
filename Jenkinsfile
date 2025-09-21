@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/R0nan-F1lms/node-express-mongodb.git'
+                git branch: 'master', url: 'https://github.com/R0nan-F1lms/node-express-mongodb.git'
             }
         }
 
@@ -80,8 +80,8 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            bat 'docker stop node-express-mongodb || echo "No container to stop"'
-            bat 'docker rm node-express-mongodb || echo "No container to remove"'
+           // bat 'docker stop node-express-mongodb || echo "No container to stop"'
+           // bat 'docker rm node-express-mongodb || echo "No container to remove"'
         }
         success {
             echo 'Pipeline succeeded!'
