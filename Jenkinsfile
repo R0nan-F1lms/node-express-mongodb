@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'
+        NODE_ENV = 'test'
         APP_PORT = '8080'
         MONGO_URL = 'mongodb://localhost:27017/bezkoder_db'
         DOCKER_IMAGE = 'node-express-mongodb:latest'
@@ -26,7 +26,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running automated tests...'
-                bat 'npx jest tests/health.test.js'
+                bat 'npx jest tests/health.test.js --runInBand'
             }
         }
 
