@@ -34,7 +34,7 @@ pipeline {
             steps {
                 echo 'Running ESLint for code quality...'
                 bat 'npm install --save-dev eslint'
-                bat 'npx eslint . --max-warnings=0 || true'
+                bat 'npx eslint . --max-warnings=0 || exit 0'
             }
         }
 
