@@ -26,9 +26,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running automated tests...'
-                // using Mocha as an example for health check
-                bat 'npm install --save-dev mocha chai supertest'
-                bat 'npx mocha tests/health.test.js --timeout 5000'
+                bat 'npx jest tests/health.test.js'
             }
         }
 
