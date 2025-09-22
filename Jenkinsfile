@@ -15,11 +15,11 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Install') {
             steps {
                 echo 'Installing dependencies and building project...'
                 bat 'npm install'
-                bat 'npm run build || echo "No build script, skipping"'
+                //bat 'npm run build || echo "No build script, skipping"'
             }
         }
 
