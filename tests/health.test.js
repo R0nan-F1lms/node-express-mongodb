@@ -1,4 +1,5 @@
 const request = require('supertest');
+const db = require("../app/models"); // db.mongoose is here
 const app = require('../server');
 
 describe('API Health Check', () => {
@@ -9,6 +10,8 @@ describe('API Health Check', () => {
   });
 });
 afterAll(async () => {
-  const mongoose = require('mongoose');
-  await mongoose.connection.close();
+  // Close the Mongoose connection to let Jest exit
+  await db.mongoose.connection.close();
+  // Small delay ensures all async tasks finish
+  await new Promise(resolve => setTimeout(resolve, 500));
 });
