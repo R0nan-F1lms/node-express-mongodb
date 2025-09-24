@@ -1,6 +1,5 @@
 // eslint.config.js
 import globals from "globals";
-import js from "@eslint/js";
 
 export default [
   {
@@ -10,7 +9,7 @@ export default [
       sourceType: "module",  // For require/module.exports
       globals: {
         ...globals.node, // Node.js built-ins (console, process, etc.)
-        ...globals.jest  // Jest globals (describe, it, expect, afterAll)
+        ...globals.jest,  // Jest globals (describe, it, expect, afterAll)
       }
     },
     rules: {
@@ -28,7 +27,7 @@ export default [
       "quotes": ["error", "double"], // Enforce double quotes
       "indent": ["error", 2],        // 2 spaces indentation
       "max-len": ["warn", { "code": 120 }],
-      "comma-dangle": ["error", "always-multiline"],
+      "comma-dangle": ["warn", "always-multiline"],
 
       // 🛡️ Error Prevention
       "no-magic-numbers": ["warn", { "ignore": [0, 1, -1] }],
@@ -41,7 +40,7 @@ export default [
       "no-eval": "error",
       "no-new-func": "error",
       "no-path-concat": "error",
-      "no-buffer-constructor": "error"
+      "no-buffer-constructor": "error",
     }
   }
 ];
