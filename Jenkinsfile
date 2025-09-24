@@ -75,6 +75,7 @@ pipeline {
         '''
         // Once reachable, hit the key endpoints
         bat 'curl -sS http://localhost:%APP_PORT%/ || (echo "Root check failed" && exit /b 1)'
+        bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/health || (echo "Health check failed" && exit /b 1)'
       }
     }
@@ -83,7 +84,7 @@ pipeline {
 
     stage('Release') {
       steps {
-        withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
+        withCredentials([string(credentialsId: 'GITHUB_CREDENTIALS', variable: 'GITHUB_TOKEN')]) {
           bat '''
             git config user.email "ci@example.com"
             git config user.name "CI Bot"
