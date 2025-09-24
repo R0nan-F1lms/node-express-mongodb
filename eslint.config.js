@@ -7,7 +7,7 @@ export default [
     files: ["**/*.js"], // Apply rules to all .js files
     languageOptions: {
       ecmaVersion: "latest",   // Support modern JavaScript
-      sourceType: "commonjs",  // For require/module.exports
+      sourceType: "module",  // For require/module.exports
       globals: {
         ...globals.node, // Node.js built-ins (console, process, etc.)
         ...globals.jest  // Jest globals (describe, it, expect, afterAll)
