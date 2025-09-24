@@ -46,19 +46,25 @@ pipeline {
         bat 'npx snyk test'
       }
     }
-    
+
     stage('Deploy') {
       steps {
-        echo 'Starting app…'
-        bat 'taskkill /IM node.exe /F >NUL 2>&1 || exit /b 0'
-        bat 'start "" /B node server.js'
-        sleep(time: 8, unit: 'SECONDS')
+        echo 'Building and starting app with Docker Compose…'
+        // stop any existing stack first (ignore errors if not running)
+        bat 'docker compose -f docker-compose.yml down || exit /b 0'
+        // rebuild and start in detached mode
+        bat 'docker compose -f docker-compose.yml up -d --build'
+        // wait for containers to settle
+        sleep(time: 15, unit: 'SECONDS')
+        // show logs for debugging
+        bat 'docker compose -f docker-compose.yml logs'
       }
     }
 
     stage('Monitor') {
       steps {
-        echo 'Checking endpoints…'
+        echo 'Checking endpoints inside containerised app…'
+        // hit the same endpoints, but against the containerised port
         bat 'curl -sS http://localhost:%APP_PORT%/ || (echo "Root check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/health || (echo "Health check failed" && exit /b 1)'
