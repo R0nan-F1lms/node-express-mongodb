@@ -74,12 +74,16 @@ pipeline {
     stage('Release') {
       steps {
         echo 'Tagging release…'
-        bat 'git config user.email "ci@example.com"'
-        bat 'git config user.name "CI Bot"'
-        bat 'git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"'
-        bat 'git push origin v1.0.%BUILD_NUMBER% || echo "Tag push skipped (no creds)"'
+        bat '''
+          git config user.email "ci@example.com"
+          git config user.name "CI Bot"
+          git checkout master
+          git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"
+          git push origin master --tags
+        '''
       }
     }
+
   }
 
   post {
