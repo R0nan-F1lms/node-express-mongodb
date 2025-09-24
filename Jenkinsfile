@@ -53,7 +53,8 @@ pipeline {
         // Kill any stray node processes
         bat 'taskkill /IM node.exe /F >NUL 2>&1 || exit /b 0'
         // Start app in background
-        bat 'start "" /B node server.js'
+        bat 'start "" /B node server.js > server.log 2>&1'
+        bat 'type server.log'
         sleep(time: 8, unit: 'SECONDS')
       }
     }
