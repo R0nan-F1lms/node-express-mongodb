@@ -75,15 +75,22 @@ pipeline {
 
     stage('Release') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
-          bat 'git config user.email "ci@example.com"'
-          bat 'git config user.name "CI Bot"'
-          bat 'git remote set-url origin https://%GITHUB_USER%:%GITHUB_TOKEN%@github.com/R0nan-F1lms/node-express-mongodb.git'
-          bat 'git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"'
-          bat 'git push origin master --tags'
+        withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
+          bat '''
+            git config user.email "ci@example.com"
+            git config user.name "CI Bot"
+            git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"
+            git push origin master --tags
+
+            curl -H "Authorization: token %GITHUB_TOKEN%" ^
+                -H "Content-Type: application/json" ^
+                -d "{\\"tag_name\\": \\"v1.0.%BUILD_NUMBER%\\", \\"target_commitish\\": \\"master\\", \\"name\\": \\"Release v1.0.%BUILD_NUMBER%\\", \\"body\\": \\"Automated release created by Jenkins\\", \\"draft\\": false, \\"prerelease\\": false}" ^
+                https://api.github.com/repos/R0nan-F1lms/node-express-mongodb/releases
+          '''
         }
       }
     }
+
 
 
   }
