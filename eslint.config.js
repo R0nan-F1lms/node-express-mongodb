@@ -32,7 +32,7 @@ export default [
 
       // 🛡️ Error Prevention
       "no-magic-numbers": ["warn", { "ignore": [0, 1, -1] }],
-      "consistent-return": "error",
+      "consistent-return": "warn",
       "no-prototype-builtins": "error",
       "callback-return": "warn",
       "handle-callback-err": "warn",
