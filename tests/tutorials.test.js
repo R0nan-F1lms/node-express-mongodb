@@ -3,14 +3,12 @@ const db = require("../app/models");
 const app = require("../server");
 
 describe("Tutorials CRUD API", () => {
-  let id;
 
   it("should create a tutorial", async () => {
     const res = await request(app)
       .post("/api/tutorials")
       .send({ title: "Test", description: "Desc" });
     expect(res.statusCode).toBe(200);
-    id = res.body.id;
   });
 
   it("should fetch all tutorials", async () => {

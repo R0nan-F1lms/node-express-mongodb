@@ -10,7 +10,7 @@ export default [
       globals: {
         ...globals.node, // Node.js built-ins (console, process, etc.)
         ...globals.jest,  // Jest globals (describe, it, expect, afterAll)
-      }
+      },
     },
     rules: {
       // ✅ Essential Best Practices
@@ -30,7 +30,6 @@ export default [
       "comma-dangle": ["warn", "always-multiline"],
 
       // 🛡️ Error Prevention
-      "no-magic-numbers": ["warn", { "ignore": [0, 1, -1] }],
       "consistent-return": "warn",
       "no-prototype-builtins": "error",
       "callback-return": "warn",
@@ -41,6 +40,6 @@ export default [
       "no-new-func": "error",
       "no-path-concat": "error",
       "no-buffer-constructor": "error",
-    }
-  }
+    },
+  },
 ];
