@@ -39,16 +39,12 @@ pipeline {
     stage('Security') {
       steps {
         echo 'Running Snyk security scan…'
-        // Install snyk if not already present
-        bat 'npm install -g snyk'
-        // Authenticate with your Snyk token from Jenkins credentials
+        bat 'npm install snyk --save-dev'
         withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-          bat 'snyk auth %SNYK_TOKEN%'
+          bat 'npx snyk auth %SNYK_TOKEN%'
         }
-        // Run a test scan
-        bat 'snyk test'
+        bat 'npx snyk test'
       }
-    }
 
     stage('Deploy') {
       steps {
