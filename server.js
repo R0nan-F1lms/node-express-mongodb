@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
-// ✅ very small health endpoint (minimal change)
+// very small health endpoint (minimal change)
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
