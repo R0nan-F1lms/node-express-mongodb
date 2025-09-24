@@ -50,16 +50,13 @@ pipeline {
     stage('Deploy') {
       steps {
         echo 'Building and starting app with Docker Compose…'
-        // stop any existing stack first (ignore errors if not running)
         bat 'docker compose -f docker-compose.yml down || exit /b 0'
-        // rebuild and start in detached mode
-        bat 'docker compose -f docker-compose.yml up -d --build'
-        // wait for containers to settle
-        sleep(time: 15, unit: 'SECONDS')
-        // show logs for debugging
-        bat 'docker compose -f docker-compose.yml logs'
+        bat 'docker system prune -af || exit /b 0'   // clean up caches/layers
+        bat 'docker compose -f docker-compose.yml build --no-cache'
+        bat 'docker compose -f docker-compose.yml up -d'
       }
     }
+
 
     stage('Monitor') {
       steps {
