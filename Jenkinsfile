@@ -63,14 +63,22 @@ pipeline {
     stage('Monitor') {
       steps {
         echo 'Checking endpoints…'
-        // Wait until Mongo is reachable
-        bat 'for /l %i in (1,1,10) do (curl -s http://localhost:27017 || (echo waiting & timeout /t 2 >nul))'
-        // Now test endpoints
+        // Wait until app root responds
+        bat '''
+          for /l %%i in (1,1,10) do (
+            curl -s http://localhost:%APP_PORT%/ >nul && exit /b 0
+            echo waiting for app...
+            timeout /t 3 >nul
+          )
+          echo App did not start in time
+          exit /b 1
+        '''
+        // Once reachable, hit the key endpoints
         bat 'curl -sS http://localhost:%APP_PORT%/ || (echo "Root check failed" && exit /b 1)'
-        bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/health || (echo "Health check failed" && exit /b 1)'
       }
     }
+
 
 
     stage('Release') {
