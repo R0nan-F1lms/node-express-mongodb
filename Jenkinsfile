@@ -18,11 +18,8 @@ pipeline {
     stage('Install (Build artefact)') {
       steps {
         echo 'Installing dependencies…'
-        bat 'if exist package-lock.json (npm ci) else (npm install)'
-        echo 'Packing artefact…'
-        bat 'npm pack'
-        // keep a copy of the artefact in Jenkins for the report
-        archiveArtifacts artifacts: '*.tgz', fingerprint: true
+        bat 'npm install'
+        bat 'npm pack'   // creates a tarball build artefact of your package    
       }
     }
 
