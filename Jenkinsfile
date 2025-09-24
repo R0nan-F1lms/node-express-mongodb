@@ -62,13 +62,16 @@ pipeline {
 
     stage('Monitor') {
       steps {
-        echo 'Checking endpoints inside containerised app…'
-        // hit the same endpoints, but against the containerised port
+        echo 'Checking endpoints…'
+        // Wait until Mongo is reachable
+        bat 'for /l %i in (1,1,10) do (curl -s http://localhost:27017 || (echo waiting & timeout /t 2 >nul))'
+        // Now test endpoints
         bat 'curl -sS http://localhost:%APP_PORT%/ || (echo "Root check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/health || (echo "Health check failed" && exit /b 1)'
       }
     }
+
 
     stage('Release') {
       steps {
