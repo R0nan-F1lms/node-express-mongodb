@@ -1,12 +1,12 @@
-const request = require('supertest');
+const request = require("supertest");
 const db = require("../app/models"); // db.mongoose is here
-const app = require('../server');
+const app = require("../server");
 
-describe('API Health Check', () => {
-  it('should return 200 on root endpoint', async () => {
-    const res = await request(app).get('/');
+describe("API Health Check", () => {
+  it("should return 200 on root endpoint", async () => {
+    const res = await request(app).get("/");
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ message: 'Welcome to bezkoder application.' });
+    expect(res.body).toEqual({ message: "Welcome to bezkoder application." });
   });
 });
 afterAll(async () => {
