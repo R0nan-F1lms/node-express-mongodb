@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   environment {
-    // Test mode for Jest so server.js doesn’t start listening
     NODE_ENV  = 'test'
     APP_PORT  = '8080'
     MONGO_URL = 'mongodb://localhost:27017/bezkoder_db'
@@ -15,76 +14,63 @@ pipeline {
       }
     }
 
-    stage('Install (Build artefact)') {
+    stage('Build') {
       steps {
         echo 'Installing dependencies…'
         bat 'npm install'
-        // Create a tarball artefact of the project
-        bat 'npm pack'
       }
     }
 
     stage('Test') {
       steps {
-        echo 'Running Jest tests…'
+        echo 'Running tests…'
         bat 'set NODE_ENV=test&& npx jest --runInBand --detectOpenHandles'
       }
     }
 
-    stage('Code Quality (ESLint)') {
+    stage('Code Quality') {
       steps {
-        echo 'Linting with ESLint…'
+        echo 'Running ESLint…'
         bat 'npm install --save-dev eslint @eslint/js globals'
-        // Allow up to 10 warnings, fail if exceeded
         bat 'npx eslint . --max-warnings=10'
       }
     }
 
-    stage('Security (npm audit)') {
+    stage('Security') {
       steps {
-        echo 'Running npm audit (dependency vulnerabilities)…'
-        bat 'npm audit --audit-level=moderate'
+        echo 'Running Snyk security scan…'
+        // Install snyk if not already present
+        bat 'npm install -g snyk'
+        // Authenticate with your Snyk token from Jenkins credentials
+        withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+          bat 'snyk auth %SNYK_TOKEN%'
+        }
+        // Run a test scan
+        bat 'snyk test'
       }
     }
 
-    stage('Verify MongoDB') {
+    stage('Deploy') {
       steps {
-        echo 'Checking MongoDB connection...'
-        bat 'mongo --eval "db.stats()" || echo "Mongo not reachable"'
-      }
-    }
-
-    stage('Deploy to Test (local)') {
-      steps {
-        echo 'Starting app locally (background)…'
-        // Kill any stray node processes
+        echo 'Starting app…'
         bat 'taskkill /IM node.exe /F >NUL 2>&1 || exit /b 0'
-        // Start app in background
         bat 'start "" /B node server.js'
         sleep(time: 8, unit: 'SECONDS')
       }
     }
 
-    stage('Monitoring (smoke checks)') {
+    stage('Monitor') {
       steps {
-        echo 'Checking HTTP endpoints…'
-        // Check your three key endpoints
+        echo 'Checking endpoints…'
         bat 'curl -sS http://localhost:%APP_PORT%/ || (echo "Root check failed" && exit /b 1)'
-        bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API list check failed" && exit /b 1)'
+        bat 'curl -sS http://localhost:%APP_PORT%/api/tutorials || (echo "API check failed" && exit /b 1)'
         bat 'curl -sS http://localhost:%APP_PORT%/health || (echo "Health check failed" && exit /b 1)'
       }
     }
 
-    stage('Stop Test App') {
+    stage('Release') {
       steps {
-        echo 'Stopping local test app…'
-        bat 'taskkill /IM node.exe /F >NUL 2>&1 || echo No node process to kill'
-      }
-    }
-
-    stage('Release (tag)') {
-      steps {
-        echo 'Tagging build…'
+        echo 'Tagging release…'
         bat 'git config user.email "ci@example.com"'
         bat 'git config user.name "CI Bot"'
         bat 'git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"'
@@ -95,11 +81,8 @@ pipeline {
 
   post {
     always {
-      echo 'Cleanup…'
-      // Safety net
+      echo 'Cleaning up…'
       bat 'taskkill /IM node.exe /F >NUL 2>&1 || exit /b 0'
     }
-    success { echo 'Pipeline succeeded.' }
-    failure { echo 'Pipeline failed.' }
   }
 }
