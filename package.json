@@ -2,6 +2,7 @@
   "name": "node-express-mongodb",
   "version": "1.0.0",
   "description": "Node.js Restful CRUD API with Node.js, Express and MongoDB",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -23,6 +24,8 @@
     "mongoose": "^6.11.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "globals": "^16.4.0",
     "jest": "^29.7.0",
     "snyk": "^1.1299.0",
     "supertest": "^6.3.4"

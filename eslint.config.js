@@ -1,46 +1,47 @@
+// eslint.config.js
+import globals from "globals";
+import js from "@eslint/js";
+
 export default [
   {
-    files: ["**/*.js"], // Apply these rules to all .js files
+    files: ["**/*.js"], // Apply rules to all .js files
     languageOptions: {
-      ecmaVersion: "latest",   // Support modern JavaScript syntax
+      ecmaVersion: "latest",   // Support modern JavaScript
       sourceType: "commonjs",  // For require/module.exports
-      globals: { node: true }  // Enable Node.js globals like __dirname, process, etc.
+      globals: {
+        ...globals.node, // Node.js built-ins (console, process, etc.)
+        ...globals.jest  // Jest globals (describe, it, expect, afterAll)
+      }
     },
     rules: {
       // ✅ Essential Best Practices
-      "eqeqeq": "error",             // Force ===/!== instead of ==/!= (avoids type coercion bugs)
-      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }], 
-                                     // Warn on unused variables (but allow _prefix for intentional ignores)
-      "no-console": "off",           // Allow console.log (useful for server logging)
-      "curly": "error",              // Require curly braces around blocks (e.g., if/else)
-      "no-undef": "error",           // Disallow use of undeclared variables
-      "no-var": "error",             // Forbid var (use let/const instead)
-      "prefer-const": "warn",        // Suggest const if a variable isn’t reassigned
+      "eqeqeq": "error",             // Force ===/!== instead of ==/!=
+      "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      "no-console": "off",           // Allow console.log for debugging/logging
+      "curly": "error",              // Require curly braces in if/else/etc
+      "no-undef": "error",           // Prevent undeclared variables
+      "no-var": "error",             // Forbid var
+      "prefer-const": "warn",        // Suggest const if not reassigned
 
       // 📏 Code Style & Readability
-      "semi": ["error", "always"],   // Enforce semicolons at end of statements
-      "quotes": ["error", "double"], // Enforce double quotes for strings
-      "indent": ["error", 2],        // Enforce 2-space indentation
-      "max-len": ["warn", { "code": 120 }], 
-                                     // Warn if a line exceeds 120 characters
-      "comma-dangle": ["error", "always-multiline"], 
-                                     // Require trailing commas for multiline objects/arrays (cleaner diffs)
+      "semi": ["error", "always"],   // Require semicolons
+      "quotes": ["error", "double"], // Enforce double quotes
+      "indent": ["error", 2],        // 2 spaces indentation
+      "max-len": ["warn", { "code": 120 }],
+      "comma-dangle": ["error", "always-multiline"],
 
       // 🛡️ Error Prevention
-      "no-magic-numbers": ["warn", { "ignore": [0,1,-1] }],
-                                     // Warn on unexplained numbers (e.g., status codes should be named constants)
-      "consistent-return": "error",  // Require functions to return consistently (no mixing undefined and values)
-      "no-prototype-builtins": "error", 
-                                     // Forbid unsafe usage of hasOwnProperty, etc. directly on objects
-      "callback-return": "warn",     // Enforce that callbacks are returned properly in async code
-      "handle-callback-err": "warn", // Ensure errors are handled in callbacks (important in Node.js)
+      "no-magic-numbers": ["warn", { "ignore": [0, 1, -1] }],
+      "consistent-return": "error",
+      "no-prototype-builtins": "error",
+      "callback-return": "warn",
+      "handle-callback-err": "warn",
 
       // 🔐 Security & Node.js Specific
-      "no-eval": "error",            // Disallow eval() (dangerous, security risk)
-      "no-new-func": "error",        // Disallow Function constructor (similar to eval, security risk)
-      "no-path-concat": "error",     // Disallow string concatenation for paths (use path.join instead)
-      "no-buffer-constructor": "error" 
-                                     // Disallow new Buffer() (deprecated, unsafe, prefer Buffer.from)
+      "no-eval": "error",
+      "no-new-func": "error",
+      "no-path-concat": "error",
+      "no-buffer-constructor": "error"
     }
   }
 ];
