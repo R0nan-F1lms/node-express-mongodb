@@ -45,7 +45,8 @@ pipeline {
         }
         bat 'npx snyk test'
       }
-
+    }
+    
     stage('Deploy') {
       steps {
         echo 'Starting app…'
