@@ -10,7 +10,9 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'master', url: 'https://github.com/R0nan-F1lms/node-express-mongodb.git'
+        git branch: 'master',
+        url: 'https://github.com/R0nan-F1lms/node-express-mongodb.git',
+        credentialsId: 'GITHUB_CREDENTIALS'
       }
     }
 
@@ -70,16 +72,16 @@ pipeline {
 
     stage('Release') {
       steps {
-        echo 'Tagging release…'
-        bat '''
-          git config user.email "ci@example.com"
-          git config user.name "CI Bot"
-          git checkout master
-          git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"
-          git push origin master --tags
-        '''
+        withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER')]) {
+          bat 'git config user.email "ci@example.com"'
+          bat 'git config user.name "CI Bot"'
+          bat 'git remote set-url origin https://%GITHUB_USER%:%GITHUB_TOKEN%@github.com/R0nan-F1lms/node-express-mongodb.git'
+          bat 'git tag -a v1.0.%BUILD_NUMBER% -m "Automated release %BUILD_NUMBER%"'
+          bat 'git push origin master --tags'
+        }
       }
     }
+
 
   }
 
